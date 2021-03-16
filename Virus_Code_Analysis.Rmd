@@ -1,0 +1,69 @@
+---
+title: "Virus simulation analysis"
+author: "Amicone Massimo"
+date: "10/2/2021"
+output: pdf_document
+---
+
+```{r,load}
+library("writexl")
+input_file="Virus_N6_L30000_B1000_I.RData"
+output_file1="U_estimate.xlsx" ##contains the mutation rates estimate from the simulated mutation frequencies
+output_file2="Mutation_Frequencies.xlsx" ##contains the actual mutation frequencies at the end of the simulation
+output_file3="Simulated_SFS.xlsx" ##contains the site frequency spectrum values (frequency and proportions)
+load(input_file)
+```
+
+```{r,plot controls}
+
+U=0.1 ##mutation rate
+N=2000000
+bottleneck=1/1000 ##dilution
+growth=1/bottleneck ## average growth factor
+L=30000 ##number of sites
+
+generations=15 ##number of passages
+simulations=100
+##distribution of U
+est_u=c()
+for(pop in 1:simulations){
+  u=Freq_all[pop+1,generations]/generations
+  est_u=c(est_u,u)
+}
+
+est_u=(est_u/L)*10^6
+data=data.frame(est_u)
+
+write_xlsx(data,output_file1)
+
+```
+
+
+```{r,site freq}
+##site frequency spectrum
+Counts=Counts_all
+freq=Counts/N
+write_xlsx(freq,output_file2)
+
+bins=11
+intervals=seq(0,round(max(freq)+0.005,digits = 2),length.out = bins)
+
+a=freq
+a_counts=c()
+for(i in 1:(length(intervals)-1)){
+  x0=intervals[i]
+  x1=intervals[i+1]
+  a_counts=c(a_counts,length(which(a>x0 & a<=x1)))
+}
+
+a_freq=a_counts/sum(a_counts)
+d=a_freq
+e=as.vector(d)
+
+data=data.frame(e,intervals[2:(length(intervals))])
+colnames(data)=c("Proportion","Frequency")
+
+write_xlsx(data,output_file3)
+
+```
+
