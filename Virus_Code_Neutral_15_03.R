@@ -3,19 +3,23 @@
 #author: "Amicone Massimo"
 #date: "10/2/2021"
 #output: pdf_document
-#
 #---
+
+## output file names
+output_file="Virus_Evolution_N2000000_L30000.RData"
+pool_file="Virus_Evolution_Pool.RData" ## to store pools of genotypes to be used in the migration simulations
   
 #  ```{r, define initial population}
-library(ggplot2)
+### chose the parameters ###
+
 U=0.1 ##mutation rate
-N=200000
+N=200000 ##pop size
 bottleneck=1/10000 ##dilution
 growth=1/bottleneck ## average growth factor
 L=3000 ##number of sites
 
 generations=15 ##number of passages
-simulations=50
+simulations=50 ##number of independent replicas
 
 N_pool=20 ##absolute size of the pool to be used for migration simulations (before growth)
 
@@ -153,5 +157,5 @@ for(pop in 1:simulations){
 }
 
 # Save multiple objects
-#save(Counts_all,Freq_all,N_all, file = "Virus_N200000_L3000_B1000_I.RData")
-#save(Pool_G,Pool_n, file = "Virus_Pool_N200000_L3000_B1000_I.RData")
+save(Counts_all,Freq_all,N_all, file = output_file)
+save(Pool_G,Pool_n, file = pool_file)
