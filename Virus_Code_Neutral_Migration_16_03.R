@@ -2,28 +2,27 @@
 #  title: "Virus replication and migration"
 #author: "Amicone Massimo"
 #date: "10/2/2021"
-#output: pdf_document
 #---
 
 ##input output file names
-input_file="Virus_Pool_N6_L30000_B1000_II.RData" ###to load the pool of migrants
-output_file="Virus_M0.1_N6_L30000_B1000_I.RData"
+input_file="Virus_Evolution_Pool.RData" ###to load the pool of migrants previously generated
+output_file="Virus_Evolution_M0.1_N2000000_L30000.RData"
 
 #  ```{r, define initial population}
 
 U=0.1 ##mutation rate
-N=200000
+N=2000000
 bottleneck=1/1000 ##dilution
 growth=1/bottleneck ## average growth factor
 L=30000 ##number of sites
 
 generations=15 ##number of passages
-simulations=10
+simulations=100
 
 migration=1/10 ## migrating fraction
 
 #```
-
+### the code is equivalent to the other except for the migration part
 
 #```{r, growth cycles}
 
@@ -99,8 +98,7 @@ for(pop in 1:simulations){
     
     ##update mutant genotypes
     new_mutant=which(id_new>M) ##retrieve mutants positions that survive the sampling
-    #mutant_id=id_new[new_mutant]-M
-    
+        
     new_mut_id=id_new[which(id_new>M)]
     surv=setdiff(id_new,new_mut_id)
     
@@ -148,7 +146,7 @@ for(pop in 1:simulations){
     ##import from pool
     n_pool=Pool_n[[t]]
     id=1:length(n_pool)
-    pool=sample(id,N_pool,prob=n_pool,replace = T) #àsample N_pool from the pool
+    pool=sample(id,N_pool,prob=n_pool,replace = T) #sample N_pool from the pool
     id_pool=sort(unique(pool))
     
     ##update abundances
