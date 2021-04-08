@@ -6,7 +6,7 @@
 
 ##input output file names
 input_file="Virus_Evolution_Pool.RData" ###to load the pool of migrants previously generated
-output_file="Virus_Evolution_M0.1_N2000000_L30000.RData"
+output_file="Virus_Evolution_M01_N2000000_L30000.RData"
 
 #  ```{r, define initial population}
 
