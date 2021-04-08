@@ -2,7 +2,6 @@
 #  title: "Virus replication simulation"
 #author: "Amicone Massimo"
 #date: "10/2/2021"
-#output: pdf_document
 #---
 
 ## output file names
@@ -13,15 +12,15 @@ pool_file="Virus_Evolution_Pool.RData" ## to store pools of genotypes to be used
 ### chose the parameters ###
 
 U=0.1 ##mutation rate
-N=200000 ##pop size
-bottleneck=1/10000 ##dilution
+N=2000000 ##pop size
+bottleneck=1/1000 ##dilution
 growth=1/bottleneck ## average growth factor
-L=3000 ##number of sites
+L=30000 ##number of sites
 
 generations=15 ##number of passages
-simulations=50 ##number of independent replicas
+simulations=100 ##number of independent replicas
 
-N_pool=20 ##absolute size of the pool to be used for migration simulations (before growth)
+N_pool=200 ##absolute size of the pool to be used for migration simulations (before growth)
 
 #```
 #```{r, growth cycles}
@@ -39,11 +38,12 @@ for(t in 1:generations){
   Pool_G[[t]]=matrix(0,nrow=M,ncol=L)
 }
 
+##loops for independent replicas
 for(pop in 1:simulations){
   print(paste("Population",pop))
   
   M=1 #number of lineages/mutations (SGV)
-  id=1:M ## label for each lineage
+  id=1:M #label for each lineage
   
   Genotypes=matrix(0,nrow=M,ncol=L)
   
@@ -55,11 +55,10 @@ for(pop in 1:simulations){
   N_t=c() ##will contain the tot population sizes (after growth) over time
   
   for(t in 1:generations){
-    ##growth (expand by x, where x is Poisson distributed with mean = growth)
+    ##replication (expand by x, where x is Poisson distributed with mean = growth)
     N_new=n*rpois(length(n),growth) #vector of new abundances
     N_t=c(N_t,sum(N_new))
     
-    #print(sum(N_new))
     ## mutations
     parents=c()
     mut_id=c()
@@ -80,9 +79,9 @@ for(pop in 1:simulations){
         
       }
     }
-    #print(M_t-M)
     id=1:M_t
     
+    #count the number of mutations per each site
     Counts=c()
     for(j in 1:L){
       Counts=c(Counts,sum(Genotypes[,j]*N_old))
@@ -108,8 +107,7 @@ for(pop in 1:simulations){
     
     ##update mutant genotypes
     new_mutant=which(id_new>M) ##retrieve mutants positions that survive the sampling
-    #mutant_id=id_new[new_mutant]-M ##?
-    
+        
     new_mut_id=id_new[which(id_new>M)] ##ID of the mutations
     
     surv=setdiff(id_new,new_mut_id) #survived genotypes from previous cycle
